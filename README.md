@@ -111,7 +111,7 @@ Or use the **Run** button in Android Studio targeting the `TeamCode` module.
 | `Alliance` | `configuration` | Singleton managing `BLUE` / `RED` / `NONE` alliance state with LED feedback |
 | `Configuration` | `configuration` | Configuration management (WIP) |
 
-### `Panels/AllianceNavlet`
+### `Panels`
 
 | Class | Description                                |
 |---|--------------------------------------------|
