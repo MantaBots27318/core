@@ -113,11 +113,9 @@ Or use the **Run** button in Android Studio targeting the `TeamCode` module.
 
 ### `Panels/AllianceNavlet`
 
-| Class | Description |
-|---|---|
-| `AlliancePlugin` | Plugin lifecycle, timer-based state sync |
-| `PanelsAlliance` | Panels integration layer |
-| `AllianceProvider` | Alliance color state provider |
+| Class | Description                                |
+|---|--------------------------------------------|
+| `AllianceNavlet` | Plugin to display alliance color in panels |
 
 ---
 
