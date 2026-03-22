@@ -139,7 +139,7 @@ Or use the **Run** button in Android Studio targeting the `TeamCode` module.
 ## Requirements
 
 - Android Studio Ladybug 2024.2 or later
-- Android SDK 30, min SDK 24
+- Android SDK 35, min SDK 24
 - Bun 1.0+ (Panels web build only — replaces Node/npm)
 - REV Control Hub running FTC App v11.1+
 
