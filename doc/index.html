@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mantabots — FTC Core</title>
+  <style>
+    :root {
+      --teal-dark:   #128597;
+      --teal-light:  #0e9ca8;
+      --teal-glow:   #0e9ca820;
+      --teal-border: #128597aa;
+      --bg:          #080f17;
+      --bg-card:     #0c1622;
+      --bg-code:     #060d14;
+      --text:        #dce8f0;
+      --text-muted:  #7fa8b8;
+      --text-dim:    #4a7080;
+      --accent:      #e0f4f8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 62px;
+      background: #080f17cc;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--teal-border);
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-weight: 700; font-size: 1.1rem; letter-spacing: 0.04em;
+      color: var(--accent); text-decoration: none;
+    }
+
+    .nav-brand img { flex-shrink: 0; }
+
+    nav ul {
+      list-style: none;
+      display: flex; gap: 2rem;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--teal-light); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 2.5rem 5rem;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, #128597 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, #0e9ca820 0%, transparent 60%);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border: 1px solid var(--teal-border);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal-light);
+      background: var(--teal-glow);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 30%, var(--teal-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+      color: #fff;
+      box-shadow: 0 0 20px #128597 44;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 24px #0e9ca844;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--teal-border);
+    }
+    .btn-secondary:hover {
+      color: var(--teal-light);
+      border-color: var(--teal-light);
+      background: var(--teal-glow);
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal-light);
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-intro {
+      color: var(--text-muted);
+      max-width: 640px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── ARCH CARDS ── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .arch-card {
+      background: var(--bg-card);
+      border: 1px solid #1a2f3a;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .arch-card:hover {
+      border-color: var(--teal-border);
+      transform: translateY(-3px);
+    }
+
+    .arch-card .icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      background: var(--teal-glow);
+      border: 1px solid var(--teal-border);
+    }
+
+    .arch-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--accent);
+    }
+
+    .arch-card .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .tag-hub   { background: #12859722; color: var(--teal-light); border: 1px solid var(--teal-border); }
+    .tag-online{ background: #9c6b0e22; color: #f4c86a;          border: 1px solid #9c6b0e88; }
+    .tag-base  { background: #1a2f3a;   color: var(--text-dim);   border: 1px solid #243040; }
+
+    .arch-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 3rem;
+    }
+
+    .flow-node {
+      background: var(--bg-card);
+      border: 1px solid #1a2f3a;
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      min-width: 130px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .flow-node .sub {
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: var(--text-dim);
+    }
+
+    .flow-node.highlight {
+      border-color: var(--teal-border);
+      background: linear-gradient(135deg, #0c1e2e, #0c222e);
+      box-shadow: 0 0 16px #12859722;
+    }
+
+    .flow-arrow {
+      display: flex; align-items: center;
+      color: var(--teal-dark);
+      font-size: 1.4rem;
+      padding: 0 0.4rem;
+    }
+
+    /* ── BUILD STEPS ── */
+    .build-panels, .build-ftc {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .build-header {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .build-icon {
+      width: 44px; height: 44px;
+      background: var(--teal-glow);
+      border: 1px solid var(--teal-border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--teal-glow);
+      border: 1px solid var(--teal-border);
+      color: var(--teal-light);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-body h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .step-body p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    pre, code {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    pre {
+      background: var(--bg-code);
+      border: 1px solid #1a2f3a;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      color: #8ecfdb;
+      margin-top: 0.6rem;
+      line-height: 1.6;
+    }
+
+    code {
+      background: var(--bg-code);
+      border: 1px solid #1a2f3a;
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.82rem;
+      color: var(--teal-light);
+    }
+
+    /* ── TWO COLUMNS ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    @media (max-width: 720px) {
+      .two-col { grid-template-columns: 1fr; }
+      .flow { flex-direction: column; align-items: center; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    .col-title {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #1a2f3a;
+      margin-bottom: 1.5rem;
+    }
+
+    .col-title .pill {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── DEPS TABLE ── */
+    .deps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .dep-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      background: var(--bg-card);
+      border: 1px solid #1a2f3a;
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+    }
+
+    .dep-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .dep-ver {
+      font-size: 0.75rem;
+      color: var(--teal-light);
+    }
+
+    .dep-desc {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.1rem;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--teal-border), transparent);
+      margin: 0 2.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      border-top: 1px solid #1a2f3a;
+    }
+
+    footer a { color: var(--teal-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── MANTA SVG LOGO ── */
+    .manta {
+      display: block;
+      width: 44px; height: 44px;
+      margin: 0 auto 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <img src="media/logo.png" alt="Mantabots" height="32" style="border-radius:6px;"/>
+    Mantabots · FTC Core
+  </a>
+  <ul>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#build">Build</a></li>
+    <li><a href="#dependencies">Dependencies</a></li>
+    <li><a href="#legal">Legal</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div><img src="media/logo.png" alt="Mantabots" style="height:96px;margin-bottom:1.5rem;border-radius:12px;"/></div>
+  <div class="hero-badge">FIRST Tech Challenge · Reusable Framework</div>
+  <h1>Mantabots Core</h1>
+  <p>
+    A shared foundation for every season — built once on top of FTC Controller,
+    reforked each year so the team can focus on robots, not boilerplate.
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://github.com/MantaBots27318/core">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.207 11.385.6.113.82-.258.82-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.807 1.305 3.492.998.108-.775.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.524.118-3.176 0 0 1.007-.322 3.3 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.045.138 3.003.403 2.29-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.12 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.577C20.565 21.796 24 17.298 24 12 24 5.37 18.627 0 12 0z"/></svg>
+      GitHub
+    </a>
+    <a class="btn btn-secondary" href="#build">Build Guide ↓</a>
+  </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <p class="section-label">Overview</p>
+  <h2>Project Architecture</h2>
+  <p class="section-intro">
+    Four modules, two build targets. <strong>Core</strong> stays stable across seasons —
+    each year's robot is a fork that inherits everything and adds the season-specific code.
+  </p>
+
+  <div class="arch-grid">
+
+    <div class="arch-card">
+      <div class="icon">🤖</div>
+      <h3>FtcRobotController</h3>
+      <span class="tag tag-base">Base · untouched</span>
+      <p>Official FIRST SDK. Never modified. Pulled from upstream each season to stay current.</p>
+    </div>
+
+    <div class="arch-card">
+      <div class="icon">⚙️</div>
+      <h3>Core</h3>
+      <span class="tag tag-hub">Control Hub</span>
+      <p>
+        Shared reusable components: gamepad abstraction, alliance management, configuration helpers.
+        Lives as a fork of FTC Controller. Every season project forks Core.
+      </p>
+    </div>
+
+    <div class="arch-card">
+      <div class="icon">🧪</div>
+      <h3>TeamCode</h3>
+      <span class="tag tag-hub">Control Hub</span>
+      <p>
+        Temporary test workspace. Used to validate Core components before a season fork is created.
+        Will not persist long-term.
+      </p>
+    </div>
+
+    <div class="arch-card">
+      <div class="icon">📊</div>
+      <h3>Panels</h3>
+      <span class="tag tag-online">Build online</span>
+      <p>
+        Plugins for <em>Panel by Lazar</em> dashboard. Written in Kotlin + Svelte.
+        Compiled separately and deployed as AAR into TeamCode.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Fork flow -->
+  <div class="flow">
+    <div class="flow-node">
+      FtcRobotController
+      <span class="sub">official FIRST SDK</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node highlight">
+      Core
+      <span class="sub">fork · reusable lib</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      Season Project
+      <span class="sub">fork each year</span>
+    </div>
+  </div>
+
+</section>
+
+<div class="divider"></div>
+
+<!-- BUILD -->
+<section id="build">
+  <p class="section-label">Compilation</p>
+  <h2>Build Guide</h2>
+  <p class="section-intro">
+    Two independent pipelines. Panels is compiled first (online / local machine),
+    then the main Android project is pushed to the Control Hub via Android Studio.
+  </p>
+
+  <div class="two-col">
+
+    <!-- PANELS -->
+    <div>
+      <div class="col-title">
+        <div class="build-icon">📊</div>
+        Panels
+        <span class="pill tag-online">online / local</span>
+      </div>
+
+      <div class="build-panels">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Prerequisites</h4>
+            <p>Java 17+, Node.js 20+, and Android SDK must be available on your machine.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Install Bun</h4>
+            <p>Panels uses <a href="https://bun.sh" style="color:var(--teal-light)">Bun</a> as the JS runtime and package manager.</p>
+            <pre><span style="color:var(--text-dim)"># macOS</span>
+brew install oven-sh/bun/bun
+
+<span style="color:var(--text-dim)"># Windows — winget (recommended)</span>
+winget install Oven-sh.Bun
+
+<span style="color:var(--text-dim)"># Windows — PowerShell installer</span>
+powershell -c "irm bun.sh/install.ps1 | iex"</pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Install web dependencies</h4>
+            <p>Navigate to the navlet's web folder and install packages with Bun.</p>
+            <pre>cd Panels/AllianceNavlet/web
+bun install</pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Build and deploy</h4>
+            <p>The <code>deployToTeamCode</code> Gradle task assembles the AAR and copies it directly into <code>TeamCode/plugin/</code>.</p>
+            <pre>./gradlew :Panels:AllianceNavlet:deployToTeamCode</pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Result</h4>
+            <p>The file <code>TeamCode/plugin/alliance-plugin.aar</code> is ready to be picked up by the Android build.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FTC CONTROLLER -->
+    <div>
+      <div class="col-title">
+        <div class="build-icon">🤖</div>
+        Core + TeamCode
+        <span class="pill tag-hub">Control Hub</span>
+      </div>
+
+      <div class="build-ftc">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Prerequisites</h4>
+            <p>Android Studio <strong>Ladybug 2024.2</strong> or later. Android SDK 30+ and build tools installed.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Connect to the Control Hub</h4>
+            <p>Connect via USB or Wi-Fi Direct. The Control Hub appears as an ADB device in Android Studio.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Build all modules</h4>
+            <p>Sync Gradle, then run a full build. Panels AAR must already be present in <code>TeamCode/plugin/</code>.</p>
+            <pre>./gradlew assembleDebug</pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Deploy to the hub</h4>
+            <p>Use the <em>Run</em> button in Android Studio targeting the <strong>TeamCode</strong> module, or push via ADB.</p>
+            <pre>./gradlew :TeamCode:installDebug</pre>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Start an OpMode</h4>
+            <p>Open the Driver Station app and select the desired OpMode from the list.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DEPENDENCIES -->
+<section id="dependencies">
+  <p class="section-label">Tech Stack</p>
+  <h2>Dependencies</h2>
+  <p class="section-intro">
+    Key libraries used across the Core module.
+  </p>
+
+  <div class="deps-grid">
+    <div class="dep-item">
+      <span class="dep-name">SolversLib</span>
+      <span class="dep-ver">0.3.4</span>
+      <span class="dep-desc">Command-based framework + GamepadEx, PedroPathing, Photon</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">Pedro Pathing</span>
+      <span class="dep-ver">2.1.0</span>
+      <span class="dep-desc">Autonomous path following and telemetry</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">FTC Dashboard</span>
+      <span class="dep-ver">0.5.1</span>
+      <span class="dep-desc">Real-time telemetry dashboard by ACME Robotics</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">Panels Dashboard</span>
+      <span class="dep-ver">1.0.12</span>
+      <span class="dep-desc">Panel by Lazar — virtual gamepad & navlet system</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">FTC SDK</span>
+      <span class="dep-ver">11.1.0</span>
+      <span class="dep-desc">Official FIRST Tech Challenge robot controller SDK</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">Svelte + Vite</span>
+      <span class="dep-ver">web</span>
+      <span class="dep-desc">UI framework for Panels navlets</span>
+    </div>
+  </div>
+</section>
+
+<!-- LEGAL -->
+<div class="divider"></div>
+<section id="legal">
+  <p class="section-label">Legal</p>
+  <h2>Notices &amp; Licenses</h2>
+  <p class="section-intro">
+    This project is a fork of the FTC Robot Controller SDK. The following third-party notices apply.
+  </p>
+
+  <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+    <div class="arch-card">
+      <h3 style="margin-bottom:0.5rem">FTC Robot Controller SDK</h3>
+      <p style="margin-bottom:0.75rem;color:var(--text-muted)">Copyright &copy; 2014&ndash;2022 FIRST. All rights reserved.</p>
+      <p>
+        Redistribution and use in source and binary forms, with or without modification, are permitted
+        provided that: redistributions of source code retain the copyright notice; redistributions in
+        binary form reproduce the copyright notice in the documentation; the name of FIRST may not be
+        used to endorse products derived from this software without specific prior written permission.
+      </p>
+      <p style="margin-top:0.6rem;color:var(--text-dim);font-size:0.8rem;">
+        THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT SHALL THE
+        COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR
+        CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE.
+      </p>
+    </div>
+
+    <div class="arch-card">
+      <h3 style="margin-bottom:0.5rem">Audio Assets &mdash; AudioBlocks</h3>
+      <p>
+        Sound files included in the FTC SDK (<code>chimeconnect.wav</code>, <code>chimedisconnect.wav</code>,
+        <code>errormessage.wav</code>, <code>warningmessage.wav</code>) were licensed from
+        <a href="https://www.audioblocks.com" style="color:var(--teal-light)">audioblocks.com</a>
+        under a royalty-free perpetual license and are redistributed unmodified as part of the FTC SDK.
+        See <code>doc/legal/AudioBlocksSounds.txt</code> for details.
+      </p>
+    </div>
+
+    <div class="arch-card">
+      <h3 style="margin-bottom:0.5rem">NXT Startup Sound &mdash; LEGO&reg;</h3>
+      <p>
+        The file <code>nxtstartupsound.wav</code> is subject to the
+        <strong>LEGO&reg; Open Source License Agreement Version 1.0</strong>.
+        Original code owned by LEGO&reg;. Portions created by Robert Atkinson,
+        Copyright &copy; 2015. All Rights Reserved.
+        See <code>doc/legal/LEGO Open Source License.pdf</code> for full terms.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="media/logo.png" alt="Mantabots" class="manta" style="border-radius:8px;object-fit:contain;"/>
+  Made with care by <strong>Mantabots</strong> ·
+  Built on <a href="https://github.com/FIRST-Tech-Challenge/FtcRobotController">FTC Controller v11.1</a> ·
+  Powered by <a href="https://solverslib.org">SolversLib</a> &amp; <a href="https://panels.bylazar.com">Panel by Lazar</a>
+</footer>
+
+</body>
+</html>
