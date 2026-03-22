@@ -42,12 +42,12 @@ Each year's robot project forks Core, inheriting all shared infrastructure while
 
 ## Module Structure
 
-| Module | Build target | Purpose |
-|---|---|---|
-| `FtcRobotController` | Control Hub | Official FIRST SDK — never modified |
-| `Core` | Control Hub | Reusable components: gamepad, configuration, alliance management |
-| `TeamCode` | Control Hub | Temporary test workspace — not kept long-term |
-| `Panels/AllianceNavlet` | Online / local | Dashboard plugin for [Panel by Lazar](https://panels.bylazar.com) |
+| Module | Build target | Purpose                                                            |
+|---|---|--------------------------------------------------------------------|
+| `FtcRobotController` | Control Hub | Official FIRST SDK — never modified                                |
+| `Core` | Control Hub | Reusable components: gamepad, configuration, alliance management   |
+| `TeamCode` | Control Hub | Temporary test workspace — not kept long-term                      |
+| `Panels` | Online / local | Dashboard plugins for [Panel by Lazar](https://panels.bylazar.com) |
 
 ---
 
