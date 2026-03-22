@@ -6,14 +6,20 @@
    ------------------------------------------------------- */
 package org.firstinspires.ftc.core.configuration;
 
+// System includes
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 // Junit includes
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 // Mockito includes
+import static org.mockito.Mockito.mock;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -22,6 +28,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 // Solvers lib includes
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+
+// Panels includes
+import com.bylazar.configurables.PanelsConfigurables;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AllianceTest {
@@ -45,6 +54,25 @@ public class AllianceTest {
     TestGamepad mTestGamepad;
 
     // ── Setup ────────────────────────────────────────────────────────────────
+
+    @BeforeClass
+    public static void mockPanelsConfigurables() throws Exception {
+        // sun.misc.Unsafe bypasses the final constraint on the Kotlin object INSTANCE.
+        // Class.forName avoids a direct import of this internal JDK API.
+        Class<?> unsafeClass    = Class.forName("sun.misc.Unsafe");
+        Field    theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+        theUnsafeField.setAccessible(true);
+        Object   unsafe         = theUnsafeField.get(null);
+
+        Field  instanceField = PanelsConfigurables.class.getDeclaredField("INSTANCE");
+        Method staticBase    = unsafeClass.getMethod("staticFieldBase",   Field.class);
+        Method staticOffset  = unsafeClass.getMethod("staticFieldOffset", Field.class);
+        Method putObject     = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
+
+        Object base   = staticBase.invoke(unsafe, instanceField);
+        long   offset = (long) staticOffset.invoke(unsafe, instanceField);
+        putObject.invoke(unsafe, base, offset, mock(PanelsConfigurables.class));
+    }
 
     @Before
     public void setUp() {
