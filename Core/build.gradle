@@ -1,25 +1,31 @@
-//
-// build.gradle in core
-//
-// Most of the definitions for building your module reside in a common, shared
-// file 'build.common.gradle'. Being factored in this way makes it easier to
-// integrate updates to the FTC into your code. If you really need to customize
-// the build definitions, you can place those customizations in this file, but
-// please think carefully as to whether such customizations are really necessary
-// before doing so.
+import java.text.SimpleDateFormat
 
-
-// Include common definitions from above.
-apply from: '../build.common.gradle'
-apply from: '../build.dependencies.gradle'
+apply plugin: 'com.android.library'
 
 android {
-    namespace = 'org.firstinspires.ftc.teamcode'
 
-    packagingOptions {
-        jniLibs.useLegacyPackaging true
+    defaultConfig {
+        minSdkVersion 24
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 28
+        buildConfigField "String", "APP_BUILD_TIME", '"' + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT).format(new Date())) + '"'
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileSdkVersion 30
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    namespace = 'org.firstinspires.ftc.core'
+
+
 }
+
 
 repositories {
     mavenCentral()
@@ -32,7 +38,6 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation project(':Core')
 
     implementation fileTree(dir: 'plugin', include: ['*.aar', '*.jar'])
 
@@ -48,4 +53,9 @@ dependencies {
     // Panels Dashboard
     implementation "com.bylazar:fullpanels:1.0.12"
 
+    // Test
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
 }
+
+apply from: '../build.dependencies.gradle'

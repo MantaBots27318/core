@@ -1,2 +1,11 @@
+pluginManagement {
+    includeBuild("Panels/plugin-svelte-assets")
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
 include ':FtcRobotController'
+include ':Core'
+include ':Panels:AllianceNavlet'
 include ':TeamCode'
