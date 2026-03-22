@@ -21,7 +21,7 @@ Fork once from FTC Controller. Fork again each year. Focus on robots, not boiler
 
 <br/>
 
-[📖 Full Documentation](https://mantabots.github.io/core) · [🐛 Issues](../../issues) · [🔀 Contribute](../../pulls)
+[📖 Full Documentation](https://mantabots27318.github.io/core/) · [🐛 Issues](../../issues) · [🔀 Contribute](../../pulls)
 
 </div>
 
@@ -138,7 +138,7 @@ Or use the **Run** button in Android Studio targeting the `TeamCode` module.
 
 ## Requirements
 
-- Android Studio Ladybug 2024.2 or later
+-[ Android Studio Ladybug 2024.2 or later
 - Android SDK 35, min SDK 24
 - Bun 1.0+ (Panels web build only — replaces Node/npm)
 - REV Control Hub running FTC App v11.1+
@@ -149,4 +149,4 @@ Or use the **Run** button in Android Studio targeting the `TeamCode` module.
 
 Made with ❤️ by **Mantabots** · Built on [FTC Controller v11.1](https://github.com/FIRST-Tech-Challenge/FtcRobotController)
 
-</div>
+</div>](https://mantabots27318.github.io/core/)
