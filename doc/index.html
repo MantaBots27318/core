@@ -694,40 +694,48 @@ bun install</pre>
 <section id="dependencies">
   <p class="section-label">Tech Stack</p>
   <h2>Dependencies</h2>
-  <p class="section-intro">
-    Key libraries used across the Core module.
-  </p>
+  <p class="section-intro">Libraries used across the project, split by scope.</p>
 
-  <div class="deps-grid">
-    <div class="dep-item">
-      <span class="dep-name">SolversLib</span>
-      <span class="dep-ver">0.3.4</span>
-      <span class="dep-desc">Command-based framework + GamepadEx, PedroPathing, Photon</span>
-    </div>
-    <div class="dep-item">
-      <span class="dep-name">Pedro Pathing</span>
-      <span class="dep-ver">2.1.0</span>
-      <span class="dep-desc">Autonomous path following and telemetry</span>
-    </div>
-    <div class="dep-item">
-      <span class="dep-name">FTC Dashboard</span>
-      <span class="dep-ver">0.5.1</span>
-      <span class="dep-desc">Real-time telemetry dashboard by ACME Robotics</span>
-    </div>
-    <div class="dep-item">
-      <span class="dep-name">Panels Dashboard</span>
-      <span class="dep-ver">1.0.12</span>
-      <span class="dep-desc">Panel by Lazar — virtual gamepad & navlet system</span>
-    </div>
+  <p style="font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem;">Runtime</p>
+  <div class="deps-grid" style="margin-bottom:2rem;">
     <div class="dep-item">
       <span class="dep-name">FTC SDK</span>
       <span class="dep-ver">11.1.0</span>
       <span class="dep-desc">Official FIRST Tech Challenge robot controller SDK</span>
     </div>
     <div class="dep-item">
+      <span class="dep-name">SolversLib</span>
+      <span class="dep-ver">0.3.4</span>
+      <span class="dep-desc">Command-based framework — core, PedroPathing, Photon</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">Pedro Pathing</span>
+      <span class="dep-ver">ftc 2.1.0 · telemetry 1.0.0</span>
+      <span class="dep-desc">Autonomous path following and telemetry</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">Panels Dashboard</span>
+      <span class="dep-ver">1.0.12</span>
+      <span class="dep-desc">Panel by Lazar — virtual gamepad &amp; navlet system</span>
+    </div>
+    <div class="dep-item">
       <span class="dep-name">Svelte + Vite</span>
-      <span class="dep-ver">web</span>
-      <span class="dep-desc">UI framework for Panels navlets</span>
+      <span class="dep-ver">ftc-panels ^1.1.44</span>
+      <span class="dep-desc">UI framework for Panels navlets (web build)</span>
+    </div>
+  </div>
+
+  <p style="font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem;">Tests</p>
+  <div class="deps-grid">
+    <div class="dep-item">
+      <span class="dep-name">JUnit</span>
+      <span class="dep-ver">4.13.2</span>
+      <span class="dep-desc">Unit test framework — local JVM tests</span>
+    </div>
+    <div class="dep-item">
+      <span class="dep-name">Mockito</span>
+      <span class="dep-ver">5.14.2</span>
+      <span class="dep-desc">Mocking framework avec inline mock support pour Java 21</span>
     </div>
   </div>
 </section>
