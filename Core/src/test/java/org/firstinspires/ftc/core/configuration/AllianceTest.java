@@ -79,21 +79,21 @@ public class AllianceTest {
         mTestGamepad = new TestGamepad();
         mMockGamepadEx.gamepad = mTestGamepad;
         Alliance.COLOR = Alliance.Color.NONE;
-        Alliance.getInstance().reset();
+        Alliance.INSTANCE.reset();
     }
 
     // ── Singleton ────────────────────────────────────────────────────────────
 
     @Test
     public void singletonAlwaysReturnsSameInstance() {
-        assertSame(Alliance.getInstance(), Alliance.getInstance());
+        assertSame(Alliance.INSTANCE, Alliance.INSTANCE);
     }
 
     // ── Initial state ────────────────────────────────────────────────────────
 
     @Test
     public void initialColorIsNone() {
-        assertEquals(Alliance.Color.NONE, Alliance.getInstance().getColor());
+        assertEquals(Alliance.Color.NONE, Alliance.INSTANCE.getColor());
     }
 
     @Test
@@ -105,19 +105,19 @@ public class AllianceTest {
 
     @Test
     public void setColorToBlue() {
-        Alliance.getInstance().setColor(Alliance.Color.BLUE);
-        assertEquals(Alliance.Color.BLUE, Alliance.getInstance().getColor());
+        Alliance.INSTANCE.setColor(Alliance.Color.BLUE);
+        assertEquals(Alliance.Color.BLUE, Alliance.INSTANCE.getColor());
     }
 
     @Test
     public void setColorToRed() {
-        Alliance.getInstance().setColor(Alliance.Color.RED);
-        assertEquals(Alliance.Color.RED, Alliance.getInstance().getColor());
+        Alliance.INSTANCE.setColor(Alliance.Color.RED);
+        assertEquals(Alliance.Color.RED, Alliance.INSTANCE.getColor());
     }
 
     @Test
     public void setColorUpdatesStaticField() {
-        Alliance.getInstance().setColor(Alliance.Color.BLUE);
+        Alliance.INSTANCE.setColor(Alliance.Color.BLUE);
         assertEquals(Alliance.Color.BLUE, Alliance.COLOR);
     }
 
@@ -125,15 +125,15 @@ public class AllianceTest {
 
     @Test
     public void resetRestoresToNone() {
-        Alliance.getInstance().setColor(Alliance.Color.RED);
-        Alliance.getInstance().reset();
-        assertEquals(Alliance.Color.NONE, Alliance.getInstance().getColor());
+        Alliance.INSTANCE.setColor(Alliance.Color.RED);
+        Alliance.INSTANCE.reset();
+        assertEquals(Alliance.Color.NONE, Alliance.INSTANCE.getColor());
     }
 
     @Test
     public void resetUpdatesStaticField() {
-        Alliance.getInstance().setColor(Alliance.Color.BLUE);
-        Alliance.getInstance().reset();
+        Alliance.INSTANCE.setColor(Alliance.Color.BLUE);
+        Alliance.INSTANCE.reset();
         assertEquals(Alliance.Color.NONE, Alliance.COLOR);
     }
 
@@ -142,14 +142,14 @@ public class AllianceTest {
     @Test
     public void getColorSyncsFromExternalStaticChange() {
         Alliance.COLOR = Alliance.Color.RED;
-        assertEquals(Alliance.Color.RED, Alliance.getInstance().getColor());
+        assertEquals(Alliance.Color.RED, Alliance.INSTANCE.getColor());
     }
 
     @Test
     public void getColorSyncsFromNoneAfterBlue() {
-        Alliance.getInstance().setColor(Alliance.Color.BLUE);
+        Alliance.INSTANCE.setColor(Alliance.Color.BLUE);
         Alliance.COLOR = Alliance.Color.NONE;
-        assertEquals(Alliance.Color.NONE, Alliance.getInstance().getColor());
+        assertEquals(Alliance.Color.NONE, Alliance.INSTANCE.getColor());
     }
 
     // ── Color enum values ────────────────────────────────────────────────────
@@ -173,8 +173,8 @@ public class AllianceTest {
 
     @Test
     public void feedbackBlueCallsCorrectLedColor() {
-        Alliance.getInstance().setColor(Alliance.Color.BLUE);
-        Alliance.getInstance().feedback(mMockGamepadEx);
+        Alliance.INSTANCE.setColor(Alliance.Color.BLUE);
+        Alliance.INSTANCE.feedback(mMockGamepadEx);
         assertEquals(0.0, mTestGamepad.lastR, 0.0);
         assertEquals(0.0, mTestGamepad.lastG, 0.0);
         assertEquals(1.0, mTestGamepad.lastB, 0.0);
@@ -183,8 +183,8 @@ public class AllianceTest {
 
     @Test
     public void feedbackRedCallsCorrectLedColor() {
-        Alliance.getInstance().setColor(Alliance.Color.RED);
-        Alliance.getInstance().feedback(mMockGamepadEx);
+        Alliance.INSTANCE.setColor(Alliance.Color.RED);
+        Alliance.INSTANCE.feedback(mMockGamepadEx);
         assertEquals(1.0, mTestGamepad.lastR, 0.0);
         assertEquals(0.0, mTestGamepad.lastG, 0.0);
         assertEquals(0.0, mTestGamepad.lastB, 0.0);
@@ -193,7 +193,7 @@ public class AllianceTest {
 
     @Test
     public void feedbackNoneCallsCorrectLedColor() {
-        Alliance.getInstance().feedback(mMockGamepadEx);
+        Alliance.INSTANCE.feedback(mMockGamepadEx);
         assertEquals(0.0, mTestGamepad.lastR, 0.0);
         assertEquals(0.0, mTestGamepad.lastG, 0.0);
         assertEquals(0.0, mTestGamepad.lastB, 0.0);
@@ -202,8 +202,8 @@ public class AllianceTest {
 
     @Test
     public void feedbackWithCustomDuration() {
-        Alliance.getInstance().setColor(Alliance.Color.BLUE);
-        Alliance.getInstance().feedback(mMockGamepadEx, 500);
+        Alliance.INSTANCE.setColor(Alliance.Color.BLUE);
+        Alliance.INSTANCE.feedback(mMockGamepadEx, 500);
         assertEquals(0.0, mTestGamepad.lastR, 0.0);
         assertEquals(0.0, mTestGamepad.lastG, 0.0);
         assertEquals(1.0, mTestGamepad.lastB, 0.0);
@@ -219,7 +219,7 @@ public class AllianceTest {
     public void feedbackSyncsColorFromStaticFieldBeforeLed() {
         // COLOR changed externally — feedback must reflect it without explicit setColor
         Alliance.COLOR = Alliance.Color.RED;
-        Alliance.getInstance().feedback(mMockGamepadEx);
+        Alliance.INSTANCE.feedback(mMockGamepadEx);
         assertEquals(1.0, mTestGamepad.lastR, 0.0);
         assertEquals(0.0, mTestGamepad.lastG, 0.0);
         assertEquals(0.0, mTestGamepad.lastB, 0.0);

@@ -23,9 +23,7 @@ android {
     }
     namespace = 'org.firstinspires.ftc.core'
 
-
 }
-
 
 repositories {
     mavenCentral()
@@ -35,6 +33,7 @@ repositories {
     maven { url = "https://repo.dairy.foundation/releases" }
     maven { url = "https://repo.dairy.foundation/snapshots" }
 }
+
 
 dependencies {
     implementation project(':FtcRobotController')

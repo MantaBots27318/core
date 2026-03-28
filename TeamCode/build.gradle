@@ -19,6 +19,10 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+
+    sourceSets {
+        main.java.srcDirs += file('../Core/src/androidTest/java/org/firstinspires/ftc/core/')
+    }
 }
 
 repositories {

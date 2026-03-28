@@ -40,15 +40,12 @@ public class Alliance {
 
     // Alliance singleton
     @IgnoreConfigurable
-    private static Alliance sInstance = new Alliance();
+    public static Alliance INSTANCE = new Alliance();
 
     // Private constructor
     private Alliance()                      { mColor = Color.NONE; }
 
     // Alliance accessors
-    public  static  Alliance getInstance()  {
-        return sInstance;
-    }
     public  Color    getColor()             {
         update();
         return mColor;

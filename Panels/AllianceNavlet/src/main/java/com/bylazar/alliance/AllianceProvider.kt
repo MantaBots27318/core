@@ -20,7 +20,7 @@ class AllianceProvider {
     internal fun updateAllianceColor() {
         allianceColor = "NONE"
 
-        val alliance = Alliance.getInstance().getColor();
+        val alliance = Alliance.INSTANCE.getColor();
 
         if (alliance != null) {
             allianceColor = alliance.toString()
