@@ -24,7 +24,8 @@ public class LoggerTest extends LinearOpMode {
 
     private enum Suite {
         NONE,
-        CONSTRUCTOR
+        CONSTRUCTOR,
+        LEVEL_FILTER
     }
 
     Suite   mCurrentSuite;
@@ -49,8 +50,8 @@ public class LoggerTest extends LinearOpMode {
         while (opModeIsActive()) {
 
             if(mNextSuite != mCurrentSuite) {
-                this.launch(mNextSuite);
-                mNextSuite = mCurrentSuite;
+                mCurrentSuite = mNextSuite;
+                this.launch(mCurrentSuite);
             }
 
             sleep(200);
@@ -59,7 +60,8 @@ public class LoggerTest extends LinearOpMode {
     }
 
     private void launch(Suite suite) {
-        if(suite == Suite.CONSTRUCTOR) { this.constructorTest(); }
+        if(suite == Suite.CONSTRUCTOR)   { this.constructorTest(); }
+        else if(suite == Suite.LEVEL_FILTER) { this.levelTest(); }
         else {
             telemetry.addLine("Unknown suite " + suite);
             PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("Unknown suite " + suite);
@@ -70,11 +72,11 @@ public class LoggerTest extends LinearOpMode {
 
         telemetry.addLine("--> Constructor test\n");
         PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("--> Constructor test");
-        Log.i("LoggerTest...rTest:0073","----> Constructor test");
+        Log.i("LoggerTest.constructorTest:0075","----> Constructor test");
 
         telemetry.addLine("----> Driver station only");
         PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Driver station only");
-        Log.i("LoggerTest...rTest:0077","----> Driver station only");
+        Log.i("LoggerTest.constructorTest:0079","----> Driver station only");
                 
         mLogger = new Logger(telemetry, null, false);
         for (Logger.Target target : Logger.Target.values()) {
@@ -89,7 +91,7 @@ public class LoggerTest extends LinearOpMode {
 
         telemetry.addLine("----> Dashboard only");
         PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Dashboard only");
-        Log.i("LoggerTest...rTest:0092","----> Dashboard station only\n");
+        Log.i("LoggerTest.constructorTest:0094","----> Dashboard station only\n");
 
         mLogger = new Logger(null, PanelsTelemetry.INSTANCE.getTelemetry(),false);
         for (Logger.Target target : Logger.Target.values()) {
@@ -104,7 +106,7 @@ public class LoggerTest extends LinearOpMode {
 
         telemetry.addLine("----> System only");
         PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> System only");
-        Log.i("LoggerTest...rTest:0107","----> System only");
+        Log.i("LoggerTest.constructorTest:0109","----> System only");
 
         mLogger = new Logger(null, null,true);
         for (Logger.Target target : Logger.Target.values()) {
@@ -119,7 +121,7 @@ public class LoggerTest extends LinearOpMode {
 
         telemetry.addLine("----> Nowhere");
         PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Nowhere");
-        Log.i("LoggerTest...rTest:0122","----> Nowhere");
+        Log.i("LoggerTest.constructorTest:0124","----> Nowhere");
 
         mLogger = new Logger(null, null, false);
         for (Logger.Target target : Logger.Target.values()) {
@@ -134,7 +136,7 @@ public class LoggerTest extends LinearOpMode {
 
         telemetry.addLine("----> Driver station, system and dashboard");
         PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Driver station and dashboard");
-        Log.i("LoggerTest...rTest:0137","----> Driver station, system and dashboard");
+        Log.i("LoggerTest.constructorTest:0139","----> Driver station, system and dashboard");
 
         mLogger = new Logger(telemetry, PanelsTelemetry.INSTANCE.getTelemetry(),true);
         for (Logger.Target target : Logger.Target.values()) {
@@ -151,6 +153,104 @@ public class LoggerTest extends LinearOpMode {
             mLogger.update(target);
         }
 
+        mNextSuite = Suite.LEVEL_FILTER;
+
+    }
+
+    private void levelTest() {
+
+        telemetry.addLine("--> Level filter test\n");
+        PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("--> Level filter test");
+        Log.i("LoggerTest.levelTest:0164","----> Level filter test");
+
+        // --- ERROR level : only errors shall appear ---
+        telemetry.addLine("----> Level ERROR : only errors shall appear");
+        PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Level ERROR : only errors shall appear");
+        Log.i("LoggerTest.levelTest:0169","----> Level ERROR : only errors shall appear");
+
+        mLogger = new Logger(telemetry, PanelsTelemetry.INSTANCE.getTelemetry(), true);
+        mLogger.level(Logger.Level.ERROR);
+        for (Logger.Target target : Logger.Target.values()) {
+            mLogger.error(target,   "ERROR   - shall appear   (level=ERROR)");
+            mLogger.warning(target, "WARNING - shall NOT appear (level=ERROR)");
+            mLogger.metric(target,  "METRIC", "shall NOT appear");
+            mLogger.info(target,    "INFO    - shall NOT appear (level=ERROR)");
+            mLogger.debug(target,   "DEBUG   - shall NOT appear (level=ERROR)");
+            mLogger.verbose(target, "VERBOSE - shall NOT appear (level=ERROR)");
+        }
+        mLogger.stop();
+
+        // --- WARN level : errors and warnings shall appear ---
+        telemetry.addLine("----> Level WARN : errors and warnings shall appear");
+        PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Level WARN : errors and warnings shall appear");
+        Log.i("LoggerTest.levelTest:0186","----> Level WARN : errors and warnings shall appear");
+
+        mLogger = new Logger(telemetry, PanelsTelemetry.INSTANCE.getTelemetry(), true);
+        mLogger.level(Logger.Level.WARNING);
+        for (Logger.Target target : Logger.Target.values()) {
+            mLogger.error(target,   "ERROR   - shall appear   (level=WARN)");
+            mLogger.warning(target, "WARNING - shall appear   (level=WARN)");
+            mLogger.metric(target,  "METRIC", "shall NOT appear");
+            mLogger.info(target,    "INFO    - shall NOT appear (level=WARN)");
+            mLogger.debug(target,   "DEBUG   - shall NOT appear (level=WARN)");
+            mLogger.verbose(target, "VERBOSE - shall NOT appear (level=WARN)");
+        }
+        mLogger.stop();
+
+        // --- INFO level : errors, warnings, metrics and infos shall appear ---
+        telemetry.addLine("----> Level INFO : errors, warnings, metrics, infos shall appear");
+        PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Level INFO : errors, warnings, metrics, infos shall appear");
+        Log.i("LoggerTest.levelTest:0203","----> Level INFO : errors, warnings, metrics, infos shall appear");
+
+        mLogger = new Logger(telemetry, PanelsTelemetry.INSTANCE.getTelemetry(), true);
+        mLogger.level(Logger.Level.INFO);
+        for (Logger.Target target : Logger.Target.values()) {
+            mLogger.error(target,   "ERROR   - shall appear   (level=INFO)");
+            mLogger.warning(target, "WARNING - shall appear   (level=INFO)");
+            mLogger.metric(target,  "METRIC", "shall appear");
+            mLogger.info(target,    "INFO    - shall appear   (level=INFO)");
+            mLogger.debug(target,   "DEBUG   - shall NOT appear (level=INFO)");
+            mLogger.verbose(target, "VERBOSE - shall NOT appear (level=INFO)");
+        }
+        mLogger.stop();
+
+        // --- DEBUG level : all except verbose shall appear ---
+        telemetry.addLine("----> Level DEBUG : all except verbose shall appear");
+        PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Level DEBUG : all except verbose shall appear");
+        Log.i("LoggerTest.levelTest:220","----> Level DEBUG : all except verbose shall appear");
+
+        mLogger = new Logger(telemetry, PanelsTelemetry.INSTANCE.getTelemetry(), true);
+        mLogger.level(Logger.Level.DEBUG);
+        for (Logger.Target target : Logger.Target.values()) {
+            mLogger.error(target,   "ERROR   - shall appear   (level=DEBUG)");
+            mLogger.warning(target, "WARNING - shall appear   (level=DEBUG)");
+            mLogger.metric(target,  "METRIC", "shall appear");
+            mLogger.info(target,    "INFO    - shall appear   (level=DEBUG)");
+            mLogger.debug(target,   "DEBUG   - shall appear   (level=DEBUG)");
+            mLogger.verbose(target, "VERBOSE - shall NOT appear (level=DEBUG)");
+        }
+        mLogger.stop();
+
+        // --- VERBOSE level : everything shall appear ---
+        telemetry.addLine("----> Level VERBOSE : all messages shall appear");
+        PanelsTelemetry.INSTANCE.getFtcTelemetry().addLine("----> Level VERBOSE : all messages shall appear");
+        Log.i("LoggerTest.levelTest:237","----> Level VERBOSE : all messages shall appear");
+
+        mLogger = new Logger(telemetry, PanelsTelemetry.INSTANCE.getTelemetry(), true);
+        mLogger.level(Logger.Level.VERBOSE);
+        for (Logger.Target target : Logger.Target.values()) {
+            mLogger.error(target,   "ERROR   - shall appear   (level=VERBOSE)");
+            mLogger.warning(target, "WARNING - shall appear   (level=VERBOSE)");
+            mLogger.metric(target,  "METRIC", "shall appear");
+            mLogger.info(target,    "INFO    - shall appear   (level=VERBOSE)");
+            mLogger.debug(target,   "DEBUG   - shall appear   (level=VERBOSE)");
+            mLogger.verbose(target, "VERBOSE - shall appear   (level=VERBOSE)");
+        }
+        mLogger.stop();
+
+        for (Logger.Target target : Logger.Target.values()) {
+            mLogger.update(target);
+        }
 
     }
 

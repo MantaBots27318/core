@@ -44,10 +44,6 @@ public class AllianceTest extends CommandOpMode {
         mGamepad1.readButtons();
         mGamepad2.readButtons();
 
-        PanelsTelemetry.INSTANCE.getFtcTelemetry().addData("X",mGamepad1.getButton(GamepadKeys.Button.X));
-        PanelsTelemetry.INSTANCE.getFtcTelemetry().addData("B",mGamepad1.getButton(GamepadKeys.Button.B));
-
-
         if(mGamepad1.wasJustPressed(GamepadKeys.Button.X)) {
             PanelsTelemetry.INSTANCE.getFtcTelemetry().addData("ALLIANCE","BLUE");
             Alliance.INSTANCE.setColor(Alliance.Color.BLUE);

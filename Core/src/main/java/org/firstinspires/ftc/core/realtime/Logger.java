@@ -28,20 +28,47 @@ import org.json.JSONObject;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /* Panels includes */
+import com.bylazar.configurables.PanelsConfigurables;
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
 
 /* Configuration includes */
 import org.firstinspires.ftc.core.configuration.ConfigurableItem;
 
+@Configurable
 public class Logger implements ConfigurableItem {
 
     static final int  sStackLevel = 3;
+
+    static public Level LEVEL = Level.VERBOSE;
 
     public enum Target {
         SYSTEM,
         DASHBOARD,
         DRIVER_STATION
     }
+
+    public enum Level {
+        ERROR(Log.ERROR,"error"),
+        WARNING(Log.WARN,"warning"),
+        INFO(Log.INFO,"info"),
+        DEBUG(Log.DEBUG,"debug"),
+        VERBOSE(Log.VERBOSE,"verbose");
+
+        private int     mValue;
+
+        private String  mName;
+
+        private Level(int value, String name) {
+            mValue = value;
+            mName = name;
+        }
+
+        int     getValue() { return mValue; }
+        String  getName()  { return mName;  }
+
+    }
+
 
     private static final Map<String, Integer > sConfToLevel = Map.of(
             "error",    Log.ERROR,
@@ -50,15 +77,6 @@ public class Logger implements ConfigurableItem {
             "debug",    Log.DEBUG,
             "verbose",  Log.VERBOSE
     );
-
-    private static final Map<Integer , String > sLevelToConf = Map.of(
-            Log.ERROR,    "error",
-            Log.WARN,     "warning",
-            Log.INFO,     "info",
-            Log.DEBUG,    "debug",
-            Log.VERBOSE,  "verbose"
-    );
-
 
     // Json keys
     static  final   String          sDriverStationKey  = "driver-station";
@@ -69,7 +87,6 @@ public class Logger implements ConfigurableItem {
 
     // Status
     boolean                                 mConfigurationValid;
-    Integer                                 mLevel;
     final int                               mStackLevel;
 
     // Loggers
@@ -103,13 +120,13 @@ public class Logger implements ConfigurableItem {
      *
      * @param station the driver station telemetry from opmode (may be null if shall not be used for logging)
      * @param dashboard the panels telemetry instance (may be null if shall not be used for logging)
-     * @param shallUseSystemLog the boolean value stating if system logs should be used 
+     * @param shallUseSystemLog the boolean value stating if system logs should be used
      * @param stackLevel the stack level to get the function name
      */
     public Logger(Telemetry station, TelemetryManager dashboard, boolean shallUseSystemLog, int stackLevel) {
 
         mConfigurationValid = true;
-        mLevel = Log.VERBOSE;
+        LEVEL       = Level.VERBOSE;
         mStackLevel = stackLevel;
 
         mErrors   = new LinkedHashMap<>();
@@ -119,23 +136,21 @@ public class Logger implements ConfigurableItem {
         mVerboses = new LinkedHashMap<>();
         mMetrics  = new LinkedHashMap<>();
         for(Target target : Target.values()) {
+
             mErrors.put(target,new ArrayList<>());
             mWarnings.put(target,new ArrayList<>());
             mInfos.put(target,new ArrayList<>());
             mDebugs.put(target,new ArrayList<>());
             mVerboses.put(target,new ArrayList<>());
             mMetrics.put(target, new LinkedHashMap<>());
-        }
-        
-        mDriverStation = station;
-        if(mDriverStation != null) {
-            mDriverStation.setAutoClear(true);
+
         }
 
+        mDriverStation = station;
+        if(mDriverStation != null) { mDriverStation.setAutoClear(true); }
+
         mDashboard = dashboard;
-        if(mDashboard != null) {
-            mDashboard.setUpdateInterval(10);
-        }
+        if(mDashboard != null)     { mDashboard.setUpdateInterval(10); }
 
         mShallUseSystemLogs = shallUseSystemLog;
 
@@ -147,7 +162,10 @@ public class Logger implements ConfigurableItem {
      *
      * @param level minimal severity to log
      */
-    public void level(Integer level) { mLevel = level; }
+    public void level(Level level) {
+        LEVEL = level;
+        PanelsConfigurables.INSTANCE.refreshClass(this);
+    }
 
     /**
      * Configuration checking
@@ -183,7 +201,7 @@ public class Logger implements ConfigurableItem {
                 header +
                 "> " +
                 sLevelKey + " : " +
-                sLevelToConf.get(mLevel) +
+                LEVEL.getName() +
                 "\n";
     }
 
@@ -245,7 +263,12 @@ public class Logger implements ConfigurableItem {
             try {
                 String level = reader.getString(sLevelKey);
                 if(sConfToLevel.containsKey(level)) {
-                    mLevel = sConfToLevel.get(level);
+                    if(level.equals(Level.VERBOSE.getName())) { LEVEL = Level.VERBOSE; }
+                    if(level.equals(Level.DEBUG.getName()))   { LEVEL = Level.DEBUG;   }
+                    if(level.equals(Level.INFO.getName()))    { LEVEL = Level.INFO;    }
+                    if(level.equals(Level.WARNING.getName())) { LEVEL = Level.WARNING; }
+                    if(level.equals(Level.ERROR.getName()))   { LEVEL = Level.ERROR;   }
+                    PanelsConfigurables.INSTANCE.refreshClass(this);
                 }
                 else { this.warning("Level " + level + " is not managed"); }
             }
@@ -577,7 +600,7 @@ public class Logger implements ConfigurableItem {
     private void error(Target target, String message, String className, String methodName, int line) {
 
         String line_header = (line < 1000 ? (line < 100 ? (line < 10 ? "000" : "00") : "0") : "");
-        if( mLevel <= Log.ERROR) {
+        if( LEVEL.getValue() <= Log.ERROR) {
 
             switch (target) {
                 case DASHBOARD:
@@ -628,7 +651,7 @@ public class Logger implements ConfigurableItem {
     private void warning(Target target, String message, String className, String methodName, int line) {
 
         String line_header = (line < 1000 ? (line < 100 ? (line < 10 ? "000" : "00") : "0") : "");
-        if( mLevel <= Log.WARN) {
+        if( LEVEL.getValue() <= Log.WARN) {
 
             switch (target) {
                 case DASHBOARD:
@@ -682,7 +705,7 @@ public class Logger implements ConfigurableItem {
     private void metric(Target target, String metric, String value, String className, String methodName, int line) {
 
         String line_header = (line < 1000 ? (line < 100 ? (line < 10 ? "000" : "00") : "0") : "");
-        if( mLevel <= Log.INFO) {
+        if( LEVEL.getValue() <= Log.INFO) {
 
             switch (target) {
                 case DASHBOARD:
@@ -716,7 +739,7 @@ public class Logger implements ConfigurableItem {
     private void info(Target target, String message, String className, String methodName, int line) {
 
         String line_header = (line < 1000 ? (line < 100 ? (line < 10 ? "000" : "00") : "0") : "");
-        if( mLevel <= Log.INFO) {
+        if( LEVEL.getValue() <= Log.INFO) {
             switch (target) {
                 case DASHBOARD:
                     if (mDashboard != null) {
@@ -753,7 +776,7 @@ public class Logger implements ConfigurableItem {
     private void debug(Target target, String message, String className, String methodName, int line) {
 
         String line_header = (line < 1000 ? (line < 100 ? (line < 10 ? "000" : "00") : "0") : "");
-        if(  mLevel <= Log.DEBUG) {
+        if( LEVEL.getValue() <= Log.DEBUG) {
 
             switch (target) {
                 case DASHBOARD:
@@ -791,7 +814,7 @@ public class Logger implements ConfigurableItem {
     private void verbose(Target target, String message, String className, String methodName, int line) {
 
         String line_header = (line < 1000 ? (line < 100 ? (line < 10 ? "000" : "00") : "0") : "");
-        if(  mLevel <= Log.VERBOSE) {
+        if( LEVEL.getValue() <= Log.VERBOSE) {
 
             switch (target) {
                 case DASHBOARD:
